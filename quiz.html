@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz Game</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .quiz-container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .question {
+      font-size: 18px;
+      margin: 20px 0;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .options button {
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background: #e0e0e0;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .options button:hover {
+      background: #d0d0d0;
+    }
+
+    #nextBtn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background-color: #4caf50;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      display: none;
+    }
+
+    #result {
+      font-size: 20px;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>Quiz Game</h1>
+    <div id="quiz">
+      <div id="question" class="question">Question will appear here</div>
+      <div id="options" class="options"></div>
+      <button id="nextBtn" onclick="nextQuestion()">Next</button>
+    </div>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const quizData = [
+      {
+        question: "What is the capital of France?",
+        options: ["Berlin", "London", "Paris", "Rome"],
+        answer: "Paris"
+      },
+      {
+        question: "Which language runs in a web browser?",
+        options: ["Java", "C", "Python", "JavaScript"],
+        answer: "JavaScript"
+      },
+      {
+        question: "What does CSS stand for?",
+        options: ["Central Style Sheet", "Cascading Style Sheet", "Computer Style Sheet", "Colorful Style Sheet"],
+        answer: "Cascading Style Sheet"
+      },
+      {
+        question: "Which year was JavaScript created?",
+        options: ["1996", "1995", "1994", "1993"],
+        answer: "1995"
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("nextBtn");
+    const resultEl = document.getElementById("result");
+
+    function loadQuestion() {
+      const q = quizData[currentQuestion];
+      questionEl.innerText = q.question;
+      optionsEl.innerHTML = "";
+
+      q.options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.innerText = option;
+        btn.onclick = () => selectAnswer(btn, q.answer);
+        optionsEl.appendChild(btn);
+      });
+
+      nextBtn.style.display = "none";
+    }
+
+    function selectAnswer(button, correctAnswer) {
+      const buttons = document.querySelectorAll(".options button");
+      buttons.forEach(btn => btn.disabled = true);
+
+      if (button.innerText === correctAnswer) {
+        button.style.background = "#4caf50";
+        score++;
+      } else {
+        button.style.background = "#f44336";
+        buttons.forEach(btn => {
+          if (btn.innerText === correctAnswer) {
+            btn.style.background = "#4caf50";
+          }
+        });
+      }
+
+      nextBtn.style.display = "inline-block";
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion < quizData.length) {
+        loadQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      document.getElementById("quiz").style.display = "none";
+      resultEl.innerText = `You scored ${score} out of ${quizData.length}`;
+    }
+
+    // Load first question
+    loadQuestion();
+  </script>
+</body>
+</html>
